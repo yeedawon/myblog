@@ -87,4 +87,120 @@ public class Homecontroller {
         }};
         return map;
     }
+
+    @GetMapping("/home/returnMember")
+    public List<Member> showReturnMember() {
+        Member member1 = new Member(
+                "홍길동",
+                30,
+                "고양",
+                false,
+                "test1@exmaple.com",
+                "010-1234-5678",
+                List.of("게임", "독서", "헬스", "탁구")
+        );
+
+        Member member2 = new Member(
+                "홍길순",
+                31,
+                "군포",
+                true,
+                "test2@exmple.com",
+                "010-0987-6543",
+                List.of("런닝", "피아노")
+        );
+        List<Member> list = new ArrayList<>();
+        list.add(member1);
+        list.add(member2);
+        return list;
+    }
+}
+
+class Member {
+    private String name;
+    private int age;
+    private String address;
+    private boolean isMarried;
+    private String email;
+    private String phone;
+    private List<String> hobbies;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public boolean isMarried() {
+        return isMarried;
+    }
+
+    public void setMarried(boolean married) {
+        isMarried = married;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public List<String> getHobbies() {
+        return hobbies;
+    }
+
+    public void setHobbies(List<String> hobbies) {
+        this.hobbies = hobbies;
+    }
+
+    public Member(String name, int age, String address, boolean isMarried, String email, String phone, List<String> hobbies) {
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.isMarried = isMarried;
+        this.email = email;
+        this.phone = phone;
+        this.hobbies = hobbies;
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", address='" + address + '\'' +
+                ", isMarried=" + isMarried +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", hobbies=" + hobbies +
+                '}';
+    }
 }
