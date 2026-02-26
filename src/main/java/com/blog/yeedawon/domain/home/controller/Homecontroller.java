@@ -15,7 +15,7 @@ public class Homecontroller {
     public int val = -1;
     public List<Person> list = new ArrayList<>();
 
-    @GetMapping("/")
+    @GetMapping("/") // root
     public String home() {
         return "Hello Bye!";
     }
@@ -178,6 +178,19 @@ public class Homecontroller {
         if(!removed)
             return "%d번 사람을 찾을 수 없습니다.".formatted(id);
         return "%d번 사람이 삭제되었습니다.".formatted(id);
+    }
+
+    @GetMapping("/home/modifyPerson")
+    public String modifyPerson(int id, String name, int age) {
+        Person foundperson = list.stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElse(null);
+        if(foundperson == null)
+            return "%d번 사람이 없습니다.".formatted(id);
+        foundperson.setName(name);
+        foundperson.setAge(age);
+        return "%d번 사람의 정보가 수정되었습니다".formatted(id);
     }
 }
 
