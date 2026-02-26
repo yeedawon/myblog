@@ -12,13 +12,8 @@ import java.util.*;
 
 @RestController // ResponseBody + Controller
 public class Homecontroller {
-    public int val;
-    public List<Person> list;
-
-    public Homecontroller(int val, List<Person> list) {
-        this.val = val;
-        this.list = list;
-    }
+    public int val = -1;
+    public List<Person> list = new ArrayList<>();
 
     @GetMapping("/")
     public String home() {
@@ -134,12 +129,55 @@ public class Homecontroller {
         return "%d번 사람이 추가되었습니다.".formatted(p.getId());
     }
 
+    @GetMapping("/home/makePersonData")
+    public String addPerson() {
+        list.add(new Person("홍길동", 11));
+        list.add(new Person("김길동", 22));
+        list.add(new Person("장길동", 33));
+        return "데이터 생성 완료";
+    }
+
     @GetMapping("/home/showPerson")
     public List<Person> showPeople() {
         if(this.list.isEmpty()) {
             return null;
         }
         return this.list;
+    }
+
+    @GetMapping("/home/removePerson")
+    public String removePerson(int id) {
+        /*
+        Person foundPerson = null;
+        for (Person person : list) {
+            if(person.getId() == id) {
+                foundPerson = person;
+                break;
+            }
+        }
+        if(foundPerson == null)
+            return "%d번 사람은 존재하지 않습니다.".formatted(id);
+        list.remove(foundPerson);
+        return "%d번 사람의 데이터가 삭제되었습니다.".formatted(id);
+        */
+
+        // 스트림 방식
+        /*
+        Person foundPerson = list.stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElse(null);
+        if(foundPerson == null)
+            return "%d번 사람을 찾을 수 없습니다.".formatted(id);
+        list.remove(foundPerson);
+        return "%d번 사람이 삭제되었습니다.".formatted(id);
+         */
+
+        //v3
+        boolean removed = list.removeIf(p -> p.getId() == id);
+        if(!removed)
+            return "%d번 사람을 찾을 수 없습니다.".formatted(id);
+        return "%d번 사람이 삭제되었습니다.".formatted(id);
     }
 }
 

@@ -9,5 +9,4 @@ public class YeedawonApplication {
 	public static void main(String[] args) {
         SpringApplication.run(YeedawonApplication.class, args);
 	}
-
 }
