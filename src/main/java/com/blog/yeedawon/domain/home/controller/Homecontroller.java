@@ -116,6 +116,12 @@ public class Homecontroller {
     }
 }
 
+/* Member 클래스의 인스턴스 변수를 private으로 설정한 이유
+1. 데이터 취급권한 설정으로 보안성 향상
+2. Spring boot의 라이브러리인 jackson의 역할 중
+   객체 내부의 정보를 getter와 setter 기반으로 직렬화(Java obj ---> JSON)을 수행하기 때문
+   cf) (server(Java) <---> (translation by JSON) <---> web(JavaScript))의 방식으로 서버와 웹브라우저 사이에서 작동함
+*/
 class Member {
     private String name;
     private int age;
