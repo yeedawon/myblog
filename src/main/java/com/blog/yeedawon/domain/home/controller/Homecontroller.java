@@ -1,13 +1,25 @@
 package com.blog.yeedawon.domain.home.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController // ResponseBody + Controller
 public class Homecontroller {
-    public int val = -1; // 메소드 안에서 지역변수로 실행시키면 =
+    public int val;
+    public List<Person> list;
+
+    public Homecontroller(int val, List<Person> list) {
+        this.val = val;
+        this.list = list;
+    }
+
     @GetMapping("/")
     public String home() {
         return "Hello Bye!";
@@ -114,6 +126,21 @@ public class Homecontroller {
         list.add(member2);
         return list;
     }
+
+    @GetMapping("/home/addPerson")
+    public String addPerson(String name, int age) {
+        Person p = new Person(name, age);
+        this.list.add(p);
+        return "%d번 사람이 추가되었습니다.".formatted(p.getId());
+    }
+
+    @GetMapping("/home/showPerson")
+    public List<Person> showPeople() {
+        if(this.list.isEmpty()) {
+            return null;
+        }
+        return this.list;
+    }
 }
 
 /* Member 클래스의 인스턴스 변수를 private으로 설정한 이유
@@ -208,5 +235,19 @@ class Member {
                 ", phone='" + phone + '\'' +
                 ", hobbies=" + hobbies +
                 '}';
+    }
+}
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+class Person {
+    private static int lastId;
+    private int id;
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this(lastId++, name, age);
     }
 }
