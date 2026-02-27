@@ -2,18 +2,22 @@ package com.blog.yeedawon.domain.member.service;
 
 import com.blog.yeedawon.domain.member.respositery.MemberRepository;
 import com.blog.yeedawon.global.base.rsData.RsData;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.blog.yeedawon.domain.member.entity.Member;
 
-
-// 데이터 판단 주체 (controller는 데이터 유효성 여부만 검증)
+// 아래 클래스는 IoC container에 의해 생사소멸이 관리된다.
+// @Component
+// 데이터 판단 주체 (controller는 데이터 유효성 여부만 검증) 단, Service annotation이 있을 경우 자동으로 @Component가 호출됨
 @Service
+@AllArgsConstructor
 public class MemberService {
-    private MemberRepository repository;
+    private final MemberRepository repository;
 
-    public MemberService() {
-        this.repository = new MemberRepository();
+    public Member findByUserName(String username) {
+        return repository.findByUsername(username);
     }
 
     public RsData tryLogin(String username, String pw) {

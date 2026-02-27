@@ -1,11 +1,14 @@
 package com.blog.yeedawon.domain.home.controller;
 
+import com.blog.yeedawon.domain.member.entity.Member;
+import com.blog.yeedawon.domain.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -15,9 +18,12 @@ public class HomeController {
     public int val = -1;
     public List<Person> list = new ArrayList<>();
 
-    @GetMapping("/") // root
-    public String home() {
-        return "Hello Bye!";
+    @Autowired
+    private MemberService memberService;
+
+    @GetMapping("/home/user1") // root
+    public Member showUser1() {
+        return memberService.findByUserName("user1");
     }
 
     @GetMapping("/home/main1") // domain name의 하위 경로 설정 (localhost:8080/home/main1)
@@ -96,8 +102,8 @@ public class HomeController {
     }
 
     @GetMapping("/home/returnMember")
-    public List<Member> showReturnMember() {
-        Member member1 = new Member(
+    public List<Member1> showReturnMember() {
+        Member1 member1 = new Member1(
                 "홍길동",
                 30,
                 "고양",
@@ -107,7 +113,7 @@ public class HomeController {
                 List.of("게임", "독서", "헬스", "탁구")
         );
 
-        Member member2 = new Member(
+        Member1 member2 = new Member1(
                 "홍길순",
                 31,
                 "군포",
@@ -116,7 +122,7 @@ public class HomeController {
                 "010-0987-6543",
                 List.of("런닝", "피아노")
         );
-        List<Member> list = new ArrayList<>();
+        List<Member1> list = new ArrayList<>();
         list.add(member1);
         list.add(member2);
         return list;
@@ -220,7 +226,7 @@ public class HomeController {
    객체 내부의 정보를 getter와 setter 기반으로 직렬화(Java obj ---> JSON)을 수행하기 때문
    cf) (server(Java) <---> (translation by JSON) <---> web(JavaScript))의 방식으로 서버와 웹브라우저 사이에서 작동함
 */
-class Member {
+class Member1 {
     private String name;
     private int age;
     private String address;
@@ -285,7 +291,7 @@ class Member {
         this.hobbies = hobbies;
     }
 
-    public Member(String name, int age, String address, boolean isMarried, String email, String phone, List<String> hobbies) {
+    public Member1(String name, int age, String address, boolean isMarried, String email, String phone, List<String> hobbies) {
         this.name = name;
         this.age = age;
         this.address = address;
@@ -297,7 +303,7 @@ class Member {
 
     @Override
     public String toString() {
-        return "Member{" +
+        return "Member1{" +
                 "name='" + name + '\'' +
                 ", age=" + age +
                 ", address='" + address + '\'' +

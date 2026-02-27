@@ -1,10 +1,12 @@
 package com.blog.yeedawon.domain.member.respositery;
 
 import com.blog.yeedawon.domain.member.entity.Member;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class MemberRepository {
     private List<Member> members;
 

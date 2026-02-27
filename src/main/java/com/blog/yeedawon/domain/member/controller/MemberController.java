@@ -2,6 +2,7 @@ package com.blog.yeedawon.domain.member.controller;
 
 import com.blog.yeedawon.domain.member.service.MemberService;
 import com.blog.yeedawon.global.base.rsData.RsData;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,13 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/member")
+@AllArgsConstructor // lombok으로 생성자 주입 코드 생략
 public class MemberController {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = new MemberService();
-    }
+//    생성자 주입
+//    public MemberController(MemberService memberService) {
+//        this.memberService = memberService;
+//    }
 
     @GetMapping("/login")
     public RsData login(String username, String password) {
