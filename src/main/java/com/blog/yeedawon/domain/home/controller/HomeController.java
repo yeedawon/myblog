@@ -1,17 +1,17 @@
 package com.blog.yeedawon.domain.home.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.SpringApplication;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController // ResponseBody + Controller
-public class Homecontroller {
+public class HomeController {
     public int val = -1;
     public List<Person> list = new ArrayList<>();
 
@@ -192,8 +192,28 @@ public class Homecontroller {
         foundperson.setAge(age);
         return "%d번 사람의 정보가 수정되었습니다".formatted(id);
     }
-}
 
+    @GetMapping("/home/cookie/increase") // domain name의 하위 경로 설정 (localhost:8080/home/main2)
+    public int showCookieIncrease(HttpServletRequest req, HttpServletResponse resp) {
+//    HttpServletResponse : 받은 편지
+//    HttpServletResponse : 보낼 편지
+
+        // 최초에는 쿠기가 존재하지 않으므로
+        int countInCookie = 0;
+        if(req.getCookies() != null) {
+            countInCookie = Arrays.stream(req.getCookies()) //쿠키의 배열을 스트림으로
+                    .filter(cookie -> cookie.getName().equals("count")) // 쿠키명이 "count"인 것만 필터링
+                    .map(Cookie::getValue) // 쿠키로부터 값을 가져오기
+                    .mapToInt(Integer::parseInt) // cookieValue(String -> int)
+                    .findFirst().orElse(0);
+        }
+
+        int newCountInCookie = countInCookie + 1;
+
+        resp.addCookie(new Cookie("count", newCountInCookie + ""));
+        return countInCookie;
+    }
+}
 /* Member 클래스의 인스턴스 변수를 private으로 설정한 이유
 1. 데이터 취급권한 설정으로 보안성 향상
 2. Spring boot의 라이브러리인 jackson의 역할 중
