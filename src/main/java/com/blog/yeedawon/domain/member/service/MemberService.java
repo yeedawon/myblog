@@ -3,9 +3,7 @@ package com.blog.yeedawon.domain.member.service;
 import com.blog.yeedawon.domain.member.respositery.MemberRepository;
 import com.blog.yeedawon.global.base.rsData.RsData;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
 import com.blog.yeedawon.domain.member.entity.Member;
 
 // 아래 클래스는 IoC container에 의해 생사소멸이 관리된다.
@@ -27,6 +25,10 @@ public class MemberService {
             return RsData.of("F-2", "%s은 존재하지 않는 회원입니다.".formatted(username));
         if(!member.getPassword().equals(pw))
             return RsData.of("F-2", "비밀번호가 일치하지 않습니다");
-        return RsData.of("S-1", "%s님 환영합니다.".formatted(username));
+        return RsData.of("S-1", "%s님 환영합니다.".formatted(username), member.getId());
+    }
+
+    public Member findById(long id) {
+        return repository.findById(id);
     }
 }
