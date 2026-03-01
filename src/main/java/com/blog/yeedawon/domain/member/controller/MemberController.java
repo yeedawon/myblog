@@ -2,6 +2,7 @@ package com.blog.yeedawon.domain.member.controller;
 
 import com.blog.yeedawon.domain.member.entity.Member;
 import com.blog.yeedawon.domain.member.service.MemberService;
+import com.blog.yeedawon.global.base.rq.Rq;
 import com.blog.yeedawon.global.base.rsData.RsData;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,51 +29,44 @@ public class MemberController {
 
     // 1. 로그인 요청 처리 (인증 수행 및 쿠키 발급)
     @GetMapping("/login")
-    public RsData login(String username, String password, HttpServletResponse resp) {
+    public RsData login(String username, String password, HttpServletRequest req, HttpServletResponse resp) {
+        Rq rq = new Rq(req, resp);
         // 서비스의 로그인 로직 호출
         RsData rsData = memberService.tryLogin(username, password);
 
         if (rsData.isSuccess()) {
             // 로그인 성공 시 응답 데이터에서 memberId를 추출하여 쿠키에 저장
-            long memberId = (long) rsData.getData();
-            Cookie cookie = new Cookie("loginedMemberId", String.valueOf(memberId));
-            cookie.setPath("/"); // 모든 경로에서 쿠키 유효
-            resp.addCookie(cookie);
+            Member member = (Member) rsData.getData();
+            rq.setCookie("loginedMemberId", member.getId());
         }
         return rsData;
     }
 
     @GetMapping("/me")
-    public RsData showMe(HttpServletRequest req) {
-        long loginMemberId = 0;
-        if(req.getCookies() != null) {
-            Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals("loginedMemberId"))
-                    .map(Cookie::getValue)
-                    .mapToLong(Long::parseLong)
-                    .findFirst()
-                    .orElse(0);
-        }
-        boolean isLogined = loginMemberId > 0;
+    public RsData showMe(HttpServletRequest req, HttpServletResponse resp) {
+        Rq rq = new Rq(req, resp);
+        long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
+
+        boolean isLogined = loginedMemberId > 0;
 
         if(!isLogined) {
             return RsData.of("F-1", "로그인 후 이용해주세요.");
         }
 
-        Member member = memberService.findById(loginMemberId);
-        return RsData.of("S-1", "당신의 username(은)는 '%s'입니다.".formatted());
+        Member member = memberService.findById(loginedMemberId);
+        return RsData.of("S-1", "당신의 username(은)는 %sd입니다.".formatted(member.getUsername()));
     }
 
     @GetMapping("/logout")
     public RsData logout(HttpServletRequest req, HttpServletResponse resp) {
-        if(req.getCookies() != null) {
-            Arrays.stream(req.getCookies())
-                    .filter(cookie -> cookie.getName().equals("loginedMemberId"))
-                    .forEach(cookie -> {
-                        cookie.setMaxAge(0);
-                        resp.addCookie(cookie);
-                    });
+        Rq rq = new Rq(req, resp);
+
+        boolean cookieRemoved = rq.removeCookie("loginedMemberId");
+
+        if(!cookieRemoved) {
+            return RsData.of("F-1", "로그아웃에 실패했습니다. 이미 로그아웃 상태입니다.");
         }
+
         return RsData.of("S-1", "로그아웃 되었습니다.");
     }
 }

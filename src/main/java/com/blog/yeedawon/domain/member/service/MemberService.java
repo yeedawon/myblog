@@ -25,7 +25,7 @@ public class MemberService {
             return RsData.of("F-2", "%s은 존재하지 않는 회원입니다.".formatted(username));
         if(!member.getPassword().equals(pw))
             return RsData.of("F-2", "비밀번호가 일치하지 않습니다");
-        return RsData.of("S-1", "%s님 환영합니다.".formatted(username), member.getId());
+        return RsData.of("S-1", "%s님 환영합니다.".formatted(username), member);
     }
 
     public Member findById(long id) {
